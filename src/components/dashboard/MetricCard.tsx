@@ -50,18 +50,17 @@ export const MetricCard = React.forwardRef<HTMLDivElement, MetricCardProps>(
             <GripVertical className="h-5 w-5" />
           </button>
         )}
-        <CardContent>
+        <CardContent className="p-6">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 p-0 pr-3 mb-4">
+            <CardTitle className="text-sm font-medium text-muted-foreground">
+              {title}
+            </CardTitle>
+            {Icon && <Icon className="h-5 w-5 text-muted-foreground" />}
+          </CardHeader>
           {cardType === 'chart' && chartData ? (
             <UserActivityChart data={chartData} />
           ) : (
             <>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 pr-10">
-                {/* Added pr-10 for drag handle space */}
-                <CardTitle className="text-sm font-medium text-muted-foreground">
-                  {title}
-                </CardTitle>
-                {Icon && <Icon className="h-5 w-5 text-muted-foreground" />}
-              </CardHeader>
               <div className="text-3xl font-bold text-foreground">{value}</div>
               {change && (
                 <p

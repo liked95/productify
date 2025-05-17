@@ -77,39 +77,14 @@ interface DashboardGridProps {
 }
 
 export function DashboardGrid({ widgetsData, onLayoutChange }: DashboardGridProps) {
-  // Using initialWidgets as a fallback if widgetsData is not provided
-  const [widgets, setWidgets] = useState<Widget[]>([]); // State for layout order
+  const [widgets, setWidgets] = useState<Widget[]>(widgetsData || []);
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
-
-  // Load layout from local storage on initial mount
-  React.useEffect(() => {
-    if (widgetsData && widgetsData.length > 0) {
-      const savedOrder = localStorage.getItem(LOCAL_STORAGE_LAYOUT_KEY);
-      if (savedOrder) {
-        try {
-          const widgetIds: string[] = JSON.parse(savedOrder);
-          // Reorder widgetsData based on saved order, filtering out outdated/invalid ids
-          const reorderedWidgets = widgetIds
-            .map(id => widgetsData.find(widget => widget.id === id))
-            .filter((widget): widget is Widget => widget !== undefined);
-          // Add any new widgets that were not in the saved order
-          const newWidgets = widgetsData.filter(widget => !widgetIds.includes(widget.id));
-          setWidgets([...reorderedWidgets, ...newWidgets]);
-        } catch (e) {
-          console.error("Failed to parse saved layout from localStorage:", e);
-          setWidgets(widgetsData); // Fallback to default order on error
-        }
-      } else {
-        setWidgets(widgetsData); // Use default order if no saved layout
-      }
-    } else {
-      setWidgets([]);
-    }
-  }, [widgetsData]); // Depend on widgetsData to re-evaluate when data is loaded/changed
 
   // Update widgets state when widgetsData prop changes
   React.useEffect(() => {
-    setWidgets(widgetsData || []);
+    if (widgetsData) {
+      setWidgets(widgetsData);
+    }
   }, [widgetsData]);
 
   const sensors = useSensors(
@@ -128,18 +103,15 @@ export function DashboardGrid({ widgetsData, onLayoutChange }: DashboardGridProp
     const { active, over } = event;
 
     if (over && active.id !== over.id) {
-      setWidgets((items) => {
-        const oldIndex = items.findIndex((item) => item.id === active.id);
-        const newIndex = items.findIndex((item) => item.id === over.id);
-        const newItems = arrayMove(items, oldIndex, newIndex);
-        if (onLayoutChange) {
-          onLayoutChange(newItems);
-        }
-        localStorage.setItem(LOCAL_STORAGE_LAYOUT_KEY, JSON.stringify(newItems.map(w => w.id)));
-        return newItems;
-      });
+      const oldIndex = widgets.findIndex((item) => item.id === active.id);
+      const newIndex = widgets.findIndex((item) => item.id === over.id);
+      const newItems = arrayMove(widgets, oldIndex, newIndex);
+      setWidgets(newItems);
+      if (onLayoutChange) {
+        onLayoutChange(newItems);
+      }
     }
-  }, [onLayoutChange]);
+  }, [widgets, onLayoutChange]);
 
   const activeWidget = activeId ? widgets.find(w => w.id === activeId) : null;
 

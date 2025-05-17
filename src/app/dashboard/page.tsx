@@ -18,6 +18,24 @@ export default function DashboardPage() {
   const [widgetData, setWidgetData] = useState<Widget[]>(defaultInitialWidgets);
   const { toast } = useToast();
 
+  // Load saved layout from localStorage on component mount
+  useEffect(() => {
+    const savedLayout = localStorage.getItem('dashboard-widget-order');
+    if (savedLayout) {
+      try {
+        const savedOrder = JSON.parse(savedLayout);
+        // Reorder defaultInitialWidgets based on saved order
+        const orderedWidgets = savedOrder
+          .map((id: string) => defaultInitialWidgets.find(w => w.id === id))
+          .filter(Boolean) as Widget[];
+        setWidgets(orderedWidgets);
+        setWidgetData(orderedWidgets);
+      } catch (e) {
+        console.error('Error loading saved layout:', e);
+      }
+    }
+  }, []);
+
   const handleDateChange = useCallback((dateRange: DateRange | undefined) => {
     console.log('Date range selected:', dateRange);
     // Here you would typically refetch data based on the date range
@@ -34,9 +52,25 @@ export default function DashboardPage() {
 
   const handleLayoutChange = useCallback((newLayout: Widget[]) => {
     setWidgets(newLayout);
-    // Potentially save this layout to user preferences/backend
-    console.log('Dashboard layout changed:', newLayout.map(w => w.id));
-  }, []);
+    setWidgetData(newLayout);
+    // Save the new layout order to localStorage
+    try {
+      localStorage.setItem('dashboard-widget-order', JSON.stringify(newLayout.map(w => w.id)));
+      toast({ 
+        title: "Layout Saved", 
+        description: "Your dashboard layout has been saved.",
+        duration: 2000
+      });
+    } catch (e) {
+      console.error('Error saving layout:', e);
+      toast({
+        title: "Error",
+        description: "Failed to save layout. Please try again.",
+        variant: "destructive",
+        duration: 2000
+      });
+    }
+  }, [toast]);
   
   const handleLayoutOptimized = useCallback((optimizedWidgetIds: string[]) => {
     setWidgets(currentWidgets => {
@@ -59,7 +93,7 @@ export default function DashboardPage() {
   const generateMockWidgetData = useCallback((filters: Record<string, any>): Widget[] => {
     // In a real app, you would fetch or calculate data based on filters
     // This is a simple simulation:
-    return defaultInitialWidgets.map(widget => {
+    return widgets.map(widget => {
       let newData = widget.data;
       // Example: Modify data based on date range or other filters
       if (filters.dateRange) {
@@ -73,21 +107,18 @@ export default function DashboardPage() {
             value: Math.max(0, d.value + Math.floor(Math.random() * 10) - 5) // Add/subtract small random value
           }));
         }
-        // Add more conditions for other widgets and filter types as needed
       }
-      // Add conditions for other filter types (project, status, etc.)
       return { ...widget, data: newData };
     });
-  }, []);
+  }, [widgets]);
 
-  // Simulate data fetching based on filters.
-  // In a real app, this would trigger API calls.
+  // Simulate data fetching based on filters
   useEffect(() => {
     if (Object.keys(activeFilters).length > 0) {
       const newData = generateMockWidgetData(activeFilters);
       setWidgetData(newData);
     }
-  }, [activeFilters]);
+  }, [activeFilters, generateMockWidgetData]);
 
 
   return (
