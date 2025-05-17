@@ -1,31 +1,44 @@
 "use client";
 
 import React, { useState, useCallback } from 'react';
+import dynamic from 'next/dynamic';
 import {
-  DndContext,
   closestCenter,
   KeyboardSensor,
   PointerSensor,
   useSensor,
   useSensors,
-  DragOverlay,
   type DragStartEvent,
   type DragEndEvent,
   type UniqueIdentifier
 } from '@dnd-kit/core';
 import {
   arrayMove,
-  SortableContext,
   sortableKeyboardCoordinates,
-  rectSwappingStrategy, // Or rectSortingStrategy, or horizontalListSortingStrategy, etc.
+  rectSwappingStrategy,
 } from '@dnd-kit/sortable';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
-
 import type { Widget } from '@/lib/types';
-import { MetricCard } from './MetricCard'; // Ensure UserActivityChart is imported
+import { MetricCard } from './MetricCard';
 
 const LOCAL_STORAGE_LAYOUT_KEY = 'dashboard-widget-order';
+
+// Dynamically import DndContext and related components
+const DndContext = dynamic(
+  () => import('@dnd-kit/core').then(mod => mod.DndContext),
+  { ssr: false }
+);
+
+const SortableContext = dynamic(
+  () => import('@dnd-kit/sortable').then(mod => mod.SortableContext),
+  { ssr: false }
+);
+
+const DragOverlay = dynamic(
+  () => import('@dnd-kit/core').then(mod => mod.DragOverlay),
+  { ssr: false }
+);
 
 interface SortableWidgetProps {
   widget: Widget;
@@ -79,6 +92,12 @@ interface DashboardGridProps {
 export function DashboardGrid({ widgetsData, onLayoutChange }: DashboardGridProps) {
   const [widgets, setWidgets] = useState<Widget[]>(widgetsData || []);
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
+  const [isClient, setIsClient] = useState(false);
+
+  // Set isClient to true after component mounts
+  React.useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   // Update widgets state when widgetsData prop changes
   React.useEffect(() => {
@@ -114,6 +133,33 @@ export function DashboardGrid({ widgetsData, onLayoutChange }: DashboardGridProp
   }, [widgets, onLayoutChange]);
 
   const activeWidget = activeId ? widgets.find(w => w.id === activeId) : null;
+
+  // Render a placeholder during SSR
+  if (!isClient) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 auto-rows-auto">
+        {widgets.map((widget) => (
+          <div
+            key={widget.id}
+            style={{
+              gridColumn: `span ${widget.colSpan || 1}`,
+              gridRow: `span ${widget.rowSpan || 1}`,
+            }}
+          >
+            <MetricCard
+              cardType={widget.id === 'userActivity' ? 'chart' : 'number'}
+              chartData={widget.id === 'userActivity' ? (widget.data as any[]) : undefined}
+              id={widget.id}
+              title={widget.title}
+              value={widget.id !== 'userActivity' ? (widget.data?.toString() ?? 'N/A') : undefined}
+              icon={widget.icon}
+              className="h-full"
+            />
+          </div>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <DndContext

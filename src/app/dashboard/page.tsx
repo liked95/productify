@@ -5,12 +5,12 @@ import type { DateRange } from 'react-day-picker';
 import { FilterControls } from '@/components/dashboard/FilterControls';
 import { DashboardGrid } from '@/components/dashboard/DashboardGrid';
 import { UserList } from '@/components/dashboard/UserList';
-import { LayoutOptimizer } from '@/components/dashboard/LayoutOptimizer';
 import type { Widget } from '@/lib/types';
 import { initialWidgets as defaultInitialWidgets } from '@/lib/data'; // Renamed to avoid conflict
 import { Separator } from '@/components/ui/separator';
 import { Toaster } from '@/components/ui/toaster'; // Ensure Toaster is available
 import { useToast } from '@/hooks/use-toast';
+import { AIAssistantPanel } from '@/components/dashboard/AIAssistantPanel';
 
 export default function DashboardPage() {
   const [widgets, setWidgets] = useState<Widget[]>(defaultInitialWidgets);
@@ -71,23 +71,6 @@ export default function DashboardPage() {
       });
     }
   }, [toast]);
-  
-  const handleLayoutOptimized = useCallback((optimizedWidgetIds: string[]) => {
-    setWidgets(currentWidgets => {
-      const newWidgetOrder = [...currentWidgets];
-      newWidgetOrder.sort((a, b) => {
-        const indexA = optimizedWidgetIds.indexOf(a.id);
-        const indexB = optimizedWidgetIds.indexOf(b.id);
-        // Widgets not in the optimized list can be appended or handled as needed
-        if (indexA === -1 && indexB === -1) return 0;
-        if (indexA === -1) return 1; // a is not in the list, b is, so b comes first
-        if (indexB === -1) return -1; // b is not in the list, a is, so a comes first
-        return indexA - indexB;
-      });
-      return newWidgetOrder;
-    });
-    console.log('Dashboard layout optimized by AI:', optimizedWidgetIds);
-  }, []);
 
   // Simulate data generation based on filters
   const generateMockWidgetData = useCallback((filters: Record<string, any>): Widget[] => {
@@ -138,15 +121,14 @@ export default function DashboardPage() {
 
       <div>
         <h2 className="text-2xl font-semibold tracking-tight text-foreground mb-4">User Performance</h2>
-        <UserList /> {/* UserList manages its own data fetching/filtering for now */}
+        <UserList />
       </div>
       
       <Separator />
 
-      <div>
-         <LayoutOptimizer currentWidgets={widgets} onLayoutOptimized={handleLayoutOptimized} />
-      </div>
-      <Toaster /> {/* Ensure Toaster is rendered for notifications */}
+      <AIAssistantPanel dashboardData={widgetData} />
+
+      <Toaster />
     </div>
   );
 }

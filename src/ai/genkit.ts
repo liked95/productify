@@ -1,7 +1,12 @@
-import {genkit} from 'genkit';
-import {googleAI} from '@genkit-ai/googleai';
+import { GoogleGenAI } from '@google/genai';
 
-export const ai = genkit({
-  plugins: [googleAI()],
-  model: 'googleai/gemini-2.0-flash',
-});
+// Initialize the Google AI SDK
+const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+if (!apiKey) {
+  console.error('NEXT_PUBLIC_GEMINI_API_KEY is not set in environment variables');
+}
+
+const ai = new GoogleGenAI({ apiKey: apiKey || '' });
+
+// Get the model
+export const model = ai.models.generateContent;
