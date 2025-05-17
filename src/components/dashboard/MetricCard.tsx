@@ -15,6 +15,10 @@ interface MetricCardProps {
   changeType?: 'positive' | 'negative';
   className?: string;
   isDragging?: boolean;
+  style?: {
+    gridColumn: string;
+    gridRow: string;
+}
   dragHandleProps?: React.HTMLAttributes<HTMLButtonElement>; // For dnd-kit
 }
 

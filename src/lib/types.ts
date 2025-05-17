@@ -7,6 +7,7 @@ export interface User {
   email: string;
   role: 'Manager' | 'Individual Contributor' | 'Analyst';
   metrics: MetricData;
+  dataAiHint?: string;
 }
 
 export interface MetricData {
