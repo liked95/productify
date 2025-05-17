@@ -112,7 +112,7 @@ export function AIAssistantPanel() {
         marginTop: '0px',
       }}
     >
-      <Card className="h-full flex flex-col shadow-none border-none">
+      <Card className="h-full flex flex-col shadow-none border-none rounded-none">
         <CardHeader className="flex-none flex flex-row items-center justify-between">
           <CardTitle className="text-lg flex items-center">
             <Bot className="mr-2 h-5 w-5 text-primary" />

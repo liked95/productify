@@ -129,8 +129,6 @@ export default function DashboardPage() {
         <h2 className="text-2xl font-semibold tracking-tight text-foreground mb-4">User Performance</h2>
         <UserList />
       </div>
-      
-      <Separator />
 
       <AIAssistantPanel />
 
