@@ -4,7 +4,8 @@ import type { LucideIcon } from 'lucide-react';
 import { GripVertical } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
-import React from 'react';
+import React, { type CSSProperties } from 'react';
+import { UserActivityChart } from './UserActivityChart'; // Import the chart component
 
 interface MetricCardProps {
   id: string;
@@ -16,22 +17,28 @@ interface MetricCardProps {
   className?: string;
   isDragging?: boolean;
   style?: {
-    gridColumn: string;
-    gridRow: string;
-}
+    gridColumn?: string;
+    gridRow?: string;
+  };
   dragHandleProps?: React.HTMLAttributes<HTMLButtonElement>; // For dnd-kit
+  cardType?: 'number' | 'chart'; // New prop to define card type
+  chartData?: { name: string; value: number }[]; // Data for chart type
 }
 
 export const MetricCard = React.forwardRef<HTMLDivElement, MetricCardProps>(
-  ({ title, value, icon: Icon, change, changeType, className, isDragging, dragHandleProps, ...props }, ref) => {
+  (
+    { title, value, icon: Icon, change, changeType, className, isDragging, dragHandleProps, cardType = 'number', chartData, ...props },
+    ref
+  ) => {
     return (
-      <Card 
+      <Card
         ref={ref}
         className={cn(
-          "shadow-lg hover:shadow-xl transition-shadow duration-300 relative group", 
-          isDragging ? "opacity-50 shadow-2xl ring-2 ring-primary" : "",
+          'shadow-lg hover:shadow-xl transition-shadow duration-300 relative group',
+          isDragging ? 'opacity-50 shadow-2xl ring-2 ring-primary' : '',
           className
         )}
+        style={props.style as CSSProperties} // Cast to CSSProperties
         {...props}
       >
         {dragHandleProps && (
@@ -43,21 +50,30 @@ export const MetricCard = React.forwardRef<HTMLDivElement, MetricCardProps>(
             <GripVertical className="h-5 w-5" />
           </button>
         )}
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 pr-10"> {/* Added pr-10 for drag handle space */}
-          <CardTitle className="text-sm font-medium text-muted-foreground">
-            {title}
-          </CardTitle>
-          {Icon && <Icon className="h-5 w-5 text-muted-foreground" />}
-        </CardHeader>
         <CardContent>
-          <div className="text-3xl font-bold text-foreground">{value}</div>
-          {change && (
-            <p className={cn(
-              "text-xs mt-1",
-              changeType === 'positive' ? 'text-green-600' : changeType === 'negative' ? 'text-red-600' : 'text-muted-foreground'
-            )}>
-              {change}
-            </p>
+          {cardType === 'chart' && chartData ? (
+            <UserActivityChart data={chartData} />
+          ) : (
+            <>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 pr-10">
+                {/* Added pr-10 for drag handle space */}
+                <CardTitle className="text-sm font-medium text-muted-foreground">
+                  {title}
+                </CardTitle>
+                {Icon && <Icon className="h-5 w-5 text-muted-foreground" />}
+              </CardHeader>
+              <div className="text-3xl font-bold text-foreground">{value}</div>
+              {change && (
+                <p
+                  className={cn(
+                    'text-xs mt-1',
+                    changeType === 'positive' ? 'text-green-600' : changeType === 'negative' ? 'text-red-600' : 'text-muted-foreground'
+                  )}
+                >
+                  {change}
+                </p>
+              )}
+            </>
           )}
         </CardContent>
       </Card>

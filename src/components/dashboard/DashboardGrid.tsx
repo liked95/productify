@@ -24,7 +24,6 @@ import { CSS } from '@dnd-kit/utilities';
 
 import type { Widget } from '@/lib/types';
 import { MetricCard } from './MetricCard';
-import { UserActivityChart } from './UserActivityChart';
 
 interface SortableWidgetProps {
   widget: Widget;
@@ -50,11 +49,17 @@ function SortableWidget({ widget }: SortableWidgetProps) {
 
   return (
     <div ref={setNodeRef} style={style} {...attributes}>
-       <MetricCard
+      <MetricCard
+        cardType={widget.id === 'userActivity' ? 'chart' : 'number'}
+        chartData={widget.id === 'userActivity' ? (widget.data as any[]) : undefined}
         id={widget.id}
         title={widget.title}
-        value={widget.data?.toString() ?? 'N/A'}
+        value={widget.id !== 'userActivity' ? (widget.data?.toString() ?? 'N/A') : undefined}
         icon={widget.icon}
+        /*
+        Note: The icon is not currently used in the MetricCard when rendering a chart.
+        If you want to display the icon for charts, you'll need to modify MetricCard.tsx
+        */
         isDragging={isDragging}
         dragHandleProps={listeners} // Pass listeners to the drag handle in MetricCard
         className="h-full" // Ensure card fills the sortable item div
@@ -70,6 +75,7 @@ interface DashboardGridProps {
 }
 
 export function DashboardGrid({ widgetsData, onLayoutChange }: DashboardGridProps) {
+  // Using initialWidgets as a fallback if widgetsData is not provided
   const [widgets, setWidgets] = useState<Widget[]>(widgetsData || []);
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
 
@@ -122,7 +128,9 @@ export function DashboardGrid({ widgetsData, onLayoutChange }: DashboardGridProp
           <MetricCard
             id={activeWidget.id}
             title={activeWidget.title}
-            value={activeWidget.data?.toString() ?? 'N/A'}
+            cardType={activeWidget.id === 'userActivity' ? 'chart' : 'number'}
+            chartData={activeWidget.id === 'userActivity' ? (activeWidget.data as any[]) : undefined}
+            value={activeWidget.id !== 'userActivity' ? (activeWidget.data?.toString() ?? 'N/A') : undefined}
             icon={activeWidget.icon}
             isDragging // Visually indicate it's the dragged overlay
             className="shadow-2xl ring-2 ring-primary cursor-grabbing"
