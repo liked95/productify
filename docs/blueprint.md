@@ -1,4 +1,4 @@
-# **App Name**: Reactitude
+# **App Name**: Productify
 
 ## Core Features:
 

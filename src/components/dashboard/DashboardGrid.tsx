@@ -24,7 +24,7 @@ import { CSS } from '@dnd-kit/utilities';
 
 import type { Widget } from '@/lib/types';
 import { MetricCard } from './MetricCard';
-import { initialWidgets } from '@/lib/data'; // Using initialWidgets as default
+import { UserActivityChart } from './UserActivityChart';
 
 interface SortableWidgetProps {
   widget: Widget;
@@ -47,7 +47,7 @@ function SortableWidget({ widget }: SortableWidgetProps) {
     gridRow: `span ${widget.rowSpan || 1}`,
     zIndex: isDragging ? 10 : undefined, // Ensure dragging item is on top
   };
-  
+
   return (
     <div ref={setNodeRef} style={style} {...attributes}>
        <MetricCard
@@ -70,7 +70,7 @@ interface DashboardGridProps {
 }
 
 export function DashboardGrid({ widgetsData, onLayoutChange }: DashboardGridProps) {
-  const [widgets, setWidgets] = useState<Widget[]>(widgetsData || initialWidgets);
+  const [widgets, setWidgets] = useState<Widget[]>(widgetsData || []);
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
 
   const sensors = useSensors(

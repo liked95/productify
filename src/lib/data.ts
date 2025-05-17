@@ -139,14 +139,4 @@ export const initialWidgets: Widget[] = [
     rowSpan: 2,
     metricKey: 'userActivity'
   },
-  { 
-    id: 'projectTimeline', 
-    title: 'Project Timeline', 
-    icon: GanttChartSquare,
-    // Placeholder for a timeline component or more complex data
-    data: 'Upcoming: Project Phoenix Q3 Launch', 
-    colSpan: 3, 
-    rowSpan: 1,
-    metricKey: 'projectTimeline'
-  },
 ];

@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Reactitude - Productivity Dashboard',
-  description: 'Boost your productivity with Reactitude.',
+  title: 'Productify - Productivity Dashboard',
+  description: 'Boost your productivity with Productify.',
 };
 
 export default function RootLayout({
