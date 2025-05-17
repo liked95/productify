@@ -1,7 +1,7 @@
 "use client";
 
 import * as React from "react";
-import { format } from "date-fns";
+import { format, subDays } from "date-fns";
 import { Calendar as CalendarIcon,SlidersHorizontal } from "lucide-react";
 import type { DateRange } from "react-day-picker";
 
@@ -27,7 +27,14 @@ interface FilterControlsProps {
 }
 
 export function FilterControls({ onDateChange, onFilterChange }: FilterControlsProps) {
-  const [date, setDate] = React.useState<DateRange | undefined>(undefined);
+  const [date, setDate] = React.useState<DateRange | undefined>(() => {
+    const today = new Date();
+    const sevenDaysAgo = subDays(today, 7);
+    return {
+      from: sevenDaysAgo,
+      to: today
+    };
+  });
 
   React.useEffect(() => {
     onDateChange(date);

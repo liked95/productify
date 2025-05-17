@@ -34,7 +34,7 @@ const INITIAL_USERS: User[] = [
     id: '3',
     name: 'Bob The Builder',
     email: 'bob@example.com',
-    role: 'Individual Contributor',
+    role: 'Contributor',
     metrics: {
       tasksCompleted: 42,
       avgCompletionTime: '2h 10m',
@@ -47,7 +47,7 @@ const INITIAL_USERS: User[] = [
     id: '4',
     name: 'Edward Scissorhands',
     email: 'edward@example.com',
-    role: 'Individual Contributor',
+    role: 'Contributor',
     metrics: {
       tasksCompleted: 35,
       avgCompletionTime: '2h 00m',

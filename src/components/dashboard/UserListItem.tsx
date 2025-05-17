@@ -40,7 +40,7 @@ export function UserListItem({ user, onEdit, onDelete }: UserListItemProps) {
           className={
             user.role === 'Manager'
               ? 'bg-blue-600 text-white'
-              : user.role === 'Individual Contributor'
+              : user.role === 'Contributor'
               ? 'bg-green-600 text-white'
               : 'bg-yellow-500 text-white'
           }

@@ -5,7 +5,7 @@ export interface User {
   name: string;
   avatarUrl?: string;
   email: string;
-  role: 'Manager' | 'Individual Contributor' | 'Analyst';
+  role: 'Manager' | 'Contributor' | 'Analyst';
   metrics: MetricData;
   dataAiHint?: string;
 }
@@ -28,7 +28,7 @@ export interface Widget {
   rowSpan?: number; // For grid layout
 }
 
-export type UserRole = 'Manager' | 'Individual Contributor' | 'Analyst';
+export type UserRole = 'Manager' | 'Contributor' | 'Analyst';
 
 export const AVAILABLE_WIDGETS_LIST: Pick<Widget, 'id' | 'title' | 'icon'>[] = [
   { id: 'tasksCompleted', title: 'Tasks Completed' },

@@ -23,7 +23,7 @@ export const mockUsers: User[] = [
     avatarUrl: 'https://placehold.co/100x100.png',
     dataAiHint: 'man portrait',
     email: 'bob@example.com',
-    role: 'Individual Contributor',
+    role: 'Contributor',
     metrics: {
       tasksCompleted: 42,
       avgCompletionTime: '2h 10m',
@@ -68,7 +68,7 @@ export const mockUsers: User[] = [
     avatarUrl: 'https://placehold.co/100x100.png',
     dataAiHint: 'man quirky',
     email: 'edward@example.com',
-    role: 'Individual Contributor',
+    role: 'Contributor',
     metrics: {
       tasksCompleted: 35,
       avgCompletionTime: '2h 00m',

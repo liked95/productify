@@ -42,13 +42,19 @@ export function AIAssistantPanel() {
 
   const processAIResponse = async (userMessage: string): Promise<string> => {
     try {
+      const conversation = messages
+        .map(m => `${m.role === 'user' ? 'User' : 'Assistant'}: ${m.content}`)
+        .join('\n');
       const prompt = `
         You are a helpful dashboard assistant. Here is the current user data (in JSON):
         ${JSON.stringify(users, null, 2)}
 
+        Conversation so far:
+        ${conversation}
+
         The user has asked: ${userMessage}
 
-        Please provide a helpful and concise response, using the user data above if relevant.
+        Please provide a helpful and concise response, using the user data and conversation above if relevant.
       `;
 
       const response = await model({

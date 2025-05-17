@@ -12,7 +12,7 @@ interface UserFormDialogProps {
   onSubmit: (user: User) => void;
 }
 
-const ROLES: UserRole[] = ['Manager', 'Individual Contributor', 'Analyst'];
+const ROLES: UserRole[] = ['Manager', 'Contributor', 'Analyst'];
 
 const METRIC_FIELDS = [
   {
@@ -122,7 +122,7 @@ export function UserFormDialog({ open, onOpenChange, initialUser, onSubmit }: Us
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-white">
+      <DialogContent className="bg-card text-foreground border border-border">
         <DialogHeader>
           <DialogTitle>{initialUser ? 'Edit User' : 'Add User'}</DialogTitle>
           <DialogDescription>
@@ -131,16 +131,16 @@ export function UserFormDialog({ open, onOpenChange, initialUser, onSubmit }: Us
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="space-y-2">
-            <label htmlFor="name" className="block text-sm font-medium">Name</label>
-            <Input id="name" name="name" value={form.name} onChange={handleChange} placeholder="Name" required className="bg-white border border-gray-300" />
+            <label htmlFor="name" className="block text-sm font-medium text-foreground">Name</label>
+            <Input id="name" name="name" value={form.name} onChange={handleChange} placeholder="Name" required className="bg-background border border-border text-foreground" />
           </div>
           <div className="space-y-2">
-            <label htmlFor="email" className="block text-sm font-medium">Email</label>
-            <Input id="email" name="email" value={form.email} onChange={handleChange} placeholder="Email" required type="email" className="bg-white border border-gray-300" />
+            <label htmlFor="email" className="block text-sm font-medium text-foreground">Email</label>
+            <Input id="email" name="email" value={form.email} onChange={handleChange} placeholder="Email" required type="email" className="bg-background border border-border text-foreground" />
           </div>
           <div className="space-y-2">
-            <label htmlFor="role" className="block text-sm font-medium">Role</label>
-            <select id="role" name="role" value={form.role} onChange={handleChange} className="w-full border border-gray-300 rounded p-2 bg-white">
+            <label htmlFor="role" className="block text-sm font-medium text-foreground">Role</label>
+            <select id="role" name="role" value={form.role} onChange={handleChange} className="w-full border border-border rounded p-2 bg-background text-foreground">
               {ROLES.map((role) => (
                 <option key={role} value={role}>{role}</option>
               ))}
@@ -148,7 +148,7 @@ export function UserFormDialog({ open, onOpenChange, initialUser, onSubmit }: Us
           </div>
           {METRIC_FIELDS.map(field => (
             <div className="space-y-2" key={field.name}>
-              <label htmlFor={field.name} className="block text-sm font-medium">{field.label}</label>
+              <label htmlFor={field.name} className="block text-sm font-medium text-foreground">{field.label}</label>
               <Input
                 id={field.name}
                 name={field.name}
@@ -159,7 +159,7 @@ export function UserFormDialog({ open, onOpenChange, initialUser, onSubmit }: Us
                 min={field.min}
                 max={field.max}
                 required={field.required}
-                className="bg-white border border-gray-300"
+                className="bg-background border border-border text-foreground"
               />
             </div>
           ))}
