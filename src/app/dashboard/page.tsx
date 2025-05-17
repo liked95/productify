@@ -15,6 +15,7 @@ import { useToast } from '@/hooks/use-toast';
 export default function DashboardPage() {
   const [widgets, setWidgets] = useState<Widget[]>(defaultInitialWidgets);
   const [activeFilters, setActiveFilters] = useState<Record<string, any>>({});
+  const [widgetData, setWidgetData] = useState<Widget[]>(defaultInitialWidgets);
   const { toast } = useToast();
 
   const handleDateChange = useCallback((dateRange: DateRange | undefined) => {
@@ -54,15 +55,37 @@ export default function DashboardPage() {
     console.log('Dashboard layout optimized by AI:', optimizedWidgetIds);
   }, []);
 
+  // Simulate data generation based on filters
+  const generateMockWidgetData = useCallback((filters: Record<string, any>): Widget[] => {
+    // In a real app, you would fetch or calculate data based on filters
+    // This is a simple simulation:
+    return defaultInitialWidgets.map(widget => {
+      let newData = widget.data;
+      // Example: Modify data based on date range or other filters
+      if (filters.dateRange) {
+        // Simulate data change based on date range
+        if (widget.id === 'tasksCompleted') newData = Math.floor(Math.random() * 50) + 100; // Simulate different range
+        if (widget.id === 'productivityScore') newData = Math.floor(Math.random() * 20) + 70; // Simulate different range
+        if (widget.id === 'userActivity') {
+          // Simulate slight variation in chart data
+          newData = (widget.data as {name: string; value: number}[]).map(d => ({
+            ...d,
+            value: Math.max(0, d.value + Math.floor(Math.random() * 10) - 5) // Add/subtract small random value
+          }));
+        }
+        // Add more conditions for other widgets and filter types as needed
+      }
+      // Add conditions for other filter types (project, status, etc.)
+      return { ...widget, data: newData };
+    });
+  }, []);
 
   // Simulate data fetching based on filters.
   // In a real app, this would trigger API calls.
   useEffect(() => {
     if (Object.keys(activeFilters).length > 0) {
-      console.log("Fetching data with filters:", activeFilters);
-      // Potentially update widget data here based on filters
-      // For now, just log.
-      // Example: setWidgets(prevWidgets => prevWidgets.map(w => ({...w, data: fetchUpdatedData(w.id, activeFilters)})))
+      const newData = generateMockWidgetData(activeFilters);
+      setWidgetData(newData);
     }
   }, [activeFilters]);
 
@@ -77,7 +100,7 @@ export default function DashboardPage() {
 
       <div>
         <h2 className="text-2xl font-semibold tracking-tight text-foreground mb-4">Key Metrics</h2>
-        <DashboardGrid widgetsData={widgets} onLayoutChange={handleLayoutChange} />
+        <DashboardGrid widgetsData={widgetData} onLayoutChange={handleLayoutChange} />
       </div>
 
       <Separator />
