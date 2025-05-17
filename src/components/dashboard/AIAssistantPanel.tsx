@@ -9,6 +9,7 @@ import { Bot, Send, Loader2, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { model } from "@/ai/genkit";
 import ReactMarkdown from 'react-markdown';
+import { useUserStore } from '@/store/userStore';
 
 interface Message {
   role: "user" | "assistant";
@@ -31,6 +32,8 @@ export function AIAssistantPanel({ dashboardData }: AIAssistantPanelProps) {
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  const users = useUserStore(state => state.users);
+
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
     if (scrollRef.current) {
@@ -44,9 +47,12 @@ export function AIAssistantPanel({ dashboardData }: AIAssistantPanelProps) {
         You are a helpful dashboard assistant. Here is the current dashboard data (in JSON):
         ${JSON.stringify(dashboardData, null, 2)}
 
+        Here is the current user data (in JSON):
+        ${JSON.stringify(users, null, 2)}
+
         The user has asked: ${userMessage}
 
-        Please provide a helpful and concise response, using the dashboard data above if relevant.
+        Please provide a helpful and concise response, using the dashboard data and user data above if relevant.
       `;
 
       const response = await model({

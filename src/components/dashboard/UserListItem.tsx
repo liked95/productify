@@ -8,9 +8,11 @@ import { TableCell, TableRow } from '@/components/ui/table';
 
 interface UserListItemProps {
   user: User;
+  onEdit?: (user: User) => void;
+  onDelete?: (id: string) => void;
 }
 
-export function UserListItem({ user }: UserListItemProps) {
+export function UserListItem({ user, onEdit, onDelete }: UserListItemProps) {
   const getInitials = (name: string) => {
     return name
       .split(' ')
@@ -34,7 +36,17 @@ export function UserListItem({ user }: UserListItemProps) {
         </div>
       </TableCell>
       <TableCell className="text-center">
-        <Badge variant={user.role === 'Manager' ? 'default' : 'secondary'}>{user.role}</Badge>
+        <Badge
+          className={
+            user.role === 'Manager'
+              ? 'bg-blue-600 text-white'
+              : user.role === 'Individual Contributor'
+              ? 'bg-green-600 text-white'
+              : 'bg-yellow-500 text-white'
+          }
+        >
+          {user.role}
+        </Badge>
       </TableCell>
       <TableCell className="text-center text-foreground">{user.metrics.tasksCompleted}</TableCell>
       <TableCell className="text-center text-foreground">{user.metrics.avgCompletionTime}</TableCell>
@@ -48,6 +60,28 @@ export function UserListItem({ user }: UserListItemProps) {
          <span className={user.metrics.overdueTasks > 0 ? 'text-red-600 font-semibold' : 'text-foreground'}>
             {user.metrics.overdueTasks}
          </span>
+      </TableCell>
+      <TableCell className="text-center align-middle">
+        <div className="flex gap-2 justify-center items-center h-full">
+          {onEdit && (
+            <button
+              className="text-blue-600 hover:underline"
+              onClick={() => onEdit(user)}
+              title="Edit"
+            >
+              Edit
+            </button>
+          )}
+          {onDelete && (
+            <button
+              className="text-red-600 hover:underline"
+              onClick={() => onDelete(user.id)}
+              title="Delete"
+            >
+              Delete
+            </button>
+          )}
+        </div>
       </TableCell>
     </TableRow>
   );
