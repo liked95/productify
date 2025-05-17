@@ -10,21 +10,27 @@ import { Sun, Moon } from 'lucide-react';
 
 export function AppHeader() {
   const toggle = useAIAssistantStore(state => state.toggle);
-  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
-    if (typeof window !== 'undefined') {
-      return (localStorage.getItem('theme') as 'light' | 'dark') || 'dark';
-    }
-    return 'dark';
-  });
+  const [theme, setTheme] = useState<'light' | 'dark'>('dark');
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    if (theme === 'light') {
-      document.documentElement.classList.add('light');
-    } else {
-      document.documentElement.classList.remove('light');
+    setMounted(true);
+    const savedTheme = localStorage.getItem('theme') as 'light' | 'dark';
+    if (savedTheme) {
+      setTheme(savedTheme);
     }
-    localStorage.setItem('theme', theme);
-  }, [theme]);
+  }, []);
+
+  useEffect(() => {
+    if (mounted) {
+      if (theme === 'light') {
+        document.documentElement.classList.add('light');
+      } else {
+        document.documentElement.classList.remove('light');
+      }
+      localStorage.setItem('theme', theme);
+    }
+  }, [theme, mounted]);
 
   const toggleTheme = () => {
     setTheme(prev => (prev === 'dark' ? 'light' : 'dark'));
