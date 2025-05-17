@@ -9,7 +9,6 @@ import { ArrowUpDown, Search, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useUserStore } from '@/store/userStore';
-import { AIAssistantPanel } from './AIAssistantPanel';
 import { UserFormDialog } from './UserFormDialog';
 
 type SortKey = keyof User['metrics'] | 'name' | 'role';
@@ -178,7 +177,6 @@ export function UserList() {
           )}
         </CardContent>
       </Card>
-      <AIAssistantPanel dashboardData={users} />
       <UserFormDialog
         open={addDialogOpen}
         onOpenChange={setAddDialogOpen}

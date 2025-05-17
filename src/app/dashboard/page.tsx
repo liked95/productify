@@ -11,12 +11,15 @@ import { Separator } from '@/components/ui/separator';
 import { Toaster } from '@/components/ui/toaster'; // Ensure Toaster is available
 import { useToast } from '@/hooks/use-toast';
 import { AIAssistantPanel } from '@/components/dashboard/AIAssistantPanel';
+import { useAIAssistantStore } from '@/store/aiAssistantStore';
+import { cn } from '@/lib/utils';
 
 export default function DashboardPage() {
   const [widgets, setWidgets] = useState<Widget[]>(defaultInitialWidgets);
   const [activeFilters, setActiveFilters] = useState<Record<string, any>>({});
   const [widgetData, setWidgetData] = useState<Widget[]>(defaultInitialWidgets);
   const { toast } = useToast();
+  const aiOpen = useAIAssistantStore(state => state.open);
 
   // Load saved layout from localStorage on component mount
   useEffect(() => {
@@ -105,7 +108,10 @@ export default function DashboardPage() {
 
 
   return (
-    <div className="space-y-8">
+    <div className={cn(
+      "space-y-8 transition-all duration-300",
+      aiOpen && "mr-[376px]"
+    )}>
       <h1 className="text-3xl font-bold tracking-tight text-foreground">Productivity Dashboard</h1>
       
       <FilterControls onDateChange={handleDateChange} onFilterChange={handleFilterChange} />
@@ -126,7 +132,7 @@ export default function DashboardPage() {
       
       <Separator />
 
-      <AIAssistantPanel dashboardData={widgetData} />
+      <AIAssistantPanel />
 
       <Toaster />
     </div>
