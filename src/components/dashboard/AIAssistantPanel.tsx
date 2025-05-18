@@ -12,13 +12,13 @@ import ReactMarkdown from 'react-markdown';
 import { useUserStore } from '@/store/userStore';
 import { useAIAssistantStore } from '@/store/aiAssistantStore';
 import { HEADER_HEIGHT } from '@/lib/constants';
-
+import { Widget } from '@/lib/types';
 interface Message {
   role: "user" | "assistant";
   content: string;
 }
 
-export function AIAssistantPanel() {
+export function AIAssistantPanel({ dashboardData }: { dashboardData: Widget[] }) {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
@@ -48,6 +48,9 @@ export function AIAssistantPanel() {
       const prompt = `
         You are a helpful dashboard assistant. Here is the current user data (in JSON):
         ${JSON.stringify(users, null, 2)}
+
+        Here is the current dashboard data (in JSON):
+        ${JSON.stringify(dashboardData, null, 2)}
 
         Conversation so far:
         ${conversation}

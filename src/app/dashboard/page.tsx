@@ -81,12 +81,7 @@ export default function DashboardPage() {
   // Simulate data generation based on filters
   const generateMockWidgetData = useCallback((filters: Record<string, any>): Widget[] => {
     return widgets.map(widget => {
-      let newData = widget.data;
-      if (filters.dateRange) {
-        if (widget.id === 'tasksCompleted') newData = Math.floor(Math.random() * 50) + 100;
-        if (widget.id === 'productivityScore') newData = Math.floor(Math.random() * 20) + 70;
-        // No chart data here
-      }
+      const newData = Math.floor(Math.random() * 50) + 100;
       return { ...widget, data: newData };
     });
   }, [widgets]);
@@ -146,7 +141,7 @@ export default function DashboardPage() {
         <UserList />
       </div>
 
-      <AIAssistantPanel />
+      <AIAssistantPanel dashboardData={widgetData}/>
 
       <Toaster />
     </div>
