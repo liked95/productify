@@ -84,7 +84,7 @@ export const initialWidgets: Widget[] = [
     id: 'tasksCompleted', 
     title: 'Tasks Completed', 
     icon: Zap, 
-    data: 125, // Example data
+    data: 125, 
     colSpan: 1, 
     rowSpan: 1,
     metricKey: 'tasksCompleted'
@@ -111,7 +111,7 @@ export const initialWidgets: Widget[] = [
     id: 'activeProjects', 
     title: 'Active Projects', 
     icon: Users, 
-    data: 5, // Example data for a team or overall
+    data: 5, 
     colSpan: 1, 
     rowSpan: 1,
     metricKey: 'activeProjects'
@@ -126,17 +126,73 @@ export const initialWidgets: Widget[] = [
     metricKey: 'overdueTasks'
   },
   { 
-    id: 'userActivity', 
-    title: 'User Activity', 
-    icon: BarChart3,
-    // This would typically be more complex data for a chart
-    data: [ 
-      { name: 'Mon', value: 20 }, { name: 'Tue', value: 35 }, { name: 'Wed', value: 25 }, 
-      { name: 'Thu', value: 40 }, { name: 'Fri', value: 30 }, { name: 'Sat', value: 10 },
-      { name: 'Sun', value: 5 }
-    ],
-    colSpan: 2, 
-    rowSpan: 2,
-    metricKey: 'userActivity'
+    id: 'milestones', 
+    title: 'Milestones', 
+    icon: GanttChartSquare, 
+    data: 4, 
+    colSpan: 1, 
+    rowSpan: 1
+  },
+  { 
+    id: 'newTasks', 
+    title: 'New Tasks', 
+    icon: Zap, 
+    data: 24, 
+    colSpan: 1, 
+    rowSpan: 1
+  },
+  { 
+    id: 'completedToday', 
+    title: 'Completed Today', 
+    icon: TrendingUp, 
+    data: 12, 
+    colSpan: 1, 
+    rowSpan: 1
+  },
+  { 
+    id: 'pendingReviews', 
+    title: 'Pending Reviews', 
+    icon: AlertTriangle, 
+    data: 7, 
+    colSpan: 1, 
+    rowSpan: 1
+  },
+  { 
+    id: 'teamMembers', 
+    title: 'Team Members', 
+    icon: Users, 
+    data: 8, 
+    colSpan: 1, 
+    rowSpan: 1
+  },
+  { 
+    id: 'bugsReported', 
+    title: 'Bugs Reported', 
+    icon: AlertTriangle, 
+    data: 2, 
+    colSpan: 1, 
+    rowSpan: 1
+  },
+  { 
+    id: 'feedback', 
+    title: 'Feedback', 
+    icon: TrendingUp, 
+    data: 15, 
+    colSpan: 1, 
+    rowSpan: 1
   },
 ];
+
+export const userActivityWidget: Widget = {
+  id: 'userActivity',
+  title: 'User Activity',
+  icon: BarChart3,
+  data: [
+    { name: 'Mon', value: 20 }, { name: 'Tue', value: 35 }, { name: 'Wed', value: 25 },
+    { name: 'Thu', value: 40 }, { name: 'Fri', value: 30 }, { name: 'Sat', value: 10 },
+    { name: 'Sun', value: 5 }
+  ],
+  colSpan: 1,
+  rowSpan: 1,
+  metricKey: 'userActivity'
+};

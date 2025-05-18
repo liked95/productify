@@ -6,18 +6,21 @@ import { FilterControls } from '@/components/dashboard/FilterControls';
 import { DashboardGrid } from '@/components/dashboard/DashboardGrid';
 import { UserList } from '@/components/dashboard/UserList';
 import type { Widget } from '@/lib/types';
-import { initialWidgets as defaultInitialWidgets } from '@/lib/data'; // Renamed to avoid conflict
+import { initialWidgets as defaultInitialWidgets, userActivityWidget } from '@/lib/data'; // Import userActivityWidget
 import { Separator } from '@/components/ui/separator';
 import { Toaster } from '@/components/ui/toaster'; // Ensure Toaster is available
 import { useToast } from '@/hooks/use-toast';
 import { AIAssistantPanel } from '@/components/dashboard/AIAssistantPanel';
 import { useAIAssistantStore } from '@/store/aiAssistantStore';
 import { cn } from '@/lib/utils';
+import { UserActivityChart } from '@/components/dashboard/UserActivityChart';
+import { Card, CardContent } from '@/components/ui/card';
 
 export default function DashboardPage() {
   const [widgets, setWidgets] = useState<Widget[]>(defaultInitialWidgets);
   const [activeFilters, setActiveFilters] = useState<Record<string, any>>({});
   const [widgetData, setWidgetData] = useState<Widget[]>(defaultInitialWidgets);
+  const [userActivityData, setUserActivityData] = useState(userActivityWidget.data);
   const { toast } = useToast();
   const aiOpen = useAIAssistantStore(state => state.open);
 
@@ -77,35 +80,37 @@ export default function DashboardPage() {
 
   // Simulate data generation based on filters
   const generateMockWidgetData = useCallback((filters: Record<string, any>): Widget[] => {
-    // In a real app, you would fetch or calculate data based on filters
-    // This is a simple simulation:
     return widgets.map(widget => {
       let newData = widget.data;
-      // Example: Modify data based on date range or other filters
       if (filters.dateRange) {
-        // Simulate data change based on date range
-        if (widget.id === 'tasksCompleted') newData = Math.floor(Math.random() * 50) + 100; // Simulate different range
-        if (widget.id === 'productivityScore') newData = Math.floor(Math.random() * 20) + 70; // Simulate different range
-        if (widget.id === 'userActivity') {
-          // Simulate slight variation in chart data
-          newData = (widget.data as {name: string; value: number}[]).map(d => ({
-            ...d,
-            value: Math.max(0, d.value + Math.floor(Math.random() * 10) - 5) // Add/subtract small random value
-          }));
-        }
+        if (widget.id === 'tasksCompleted') newData = Math.floor(Math.random() * 50) + 100;
+        if (widget.id === 'productivityScore') newData = Math.floor(Math.random() * 20) + 70;
+        // No chart data here
       }
       return { ...widget, data: newData };
     });
   }, [widgets]);
 
-  // Simulate data fetching based on filters
+  // Generate chart data based on filters
+  const generateMockUserActivityData = useCallback((filters: Record<string, any>) => {
+    let data = userActivityWidget.data;
+    if (filters.dateRange) {
+      // Simulate slight variation in chart data
+      data = (userActivityWidget.data as {name: string; value: number}[]).map(d => ({
+        ...d,
+        value: Math.max(0, d.value + Math.floor(Math.random() * 10) - 5)
+      }));
+    }
+    return data;
+  }, []);
+
   useEffect(() => {
     if (Object.keys(activeFilters).length > 0) {
       const newData = generateMockWidgetData(activeFilters);
       setWidgetData(newData);
+      setUserActivityData(generateMockUserActivityData(activeFilters));
     }
-  }, [activeFilters, generateMockWidgetData]);
-
+  }, [activeFilters, generateMockWidgetData, generateMockUserActivityData]);
 
   return (
     <div className={cn(
@@ -120,8 +125,19 @@ export default function DashboardPage() {
 
       <div>
         <h2 className="text-2xl font-semibold tracking-tight text-foreground mb-4">Key Metrics</h2>
+        {/* Show all 12 cards in a single DashboardGrid, which handles the grid layout */}
         <DashboardGrid widgetsData={widgetData} onLayoutChange={handleLayoutChange} />
       </div>
+
+      {/* Chart section below cards */}
+      <section className="mt-10">
+        <h2 className="text-xl font-semibold mb-4">User Activity</h2>
+        <Card className="shadow-lg hover:shadow-xl transition-shadow duration-300">
+          <CardContent className="p-6">
+            <UserActivityChart data={userActivityData} />
+          </CardContent>
+        </Card>
+      </section>
 
       <Separator />
 

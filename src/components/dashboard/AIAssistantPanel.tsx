@@ -127,11 +127,8 @@ export function AIAssistantPanel() {
             <X className="h-4 w-4" />
           </Button>
         </CardHeader>
-        <CardContent className="flex-1 flex flex-col p-4 justify-between">
-          <div
-            className="flex-1 mb-4 pr-4 overflow-y-auto"
-            style={{ maxHeight: 400 }}
-          >
+        <CardContent className="flex-1 flex flex-col p-4 min-h-0">
+          <div className="flex-1 overflow-y-auto pr-4 mb-4">
             <div className="space-y-4">
               {messages.map((message, index) => {
                 const isLast = index === messages.length - 1;
