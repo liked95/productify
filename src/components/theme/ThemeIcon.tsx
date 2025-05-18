@@ -1,5 +1,5 @@
 import { Sun, Moon } from 'lucide-react';
-import type { Theme } from '@/hooks/useTheme';
+import type { Theme } from '@/hooks/use-theme';
 
 interface ThemeIconProps {
   theme: Theme;
